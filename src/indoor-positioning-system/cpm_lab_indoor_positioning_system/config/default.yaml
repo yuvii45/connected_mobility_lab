@@ -7,7 +7,7 @@
     number_vehicles: 20
 
     ## LED detection
-    led_detection_min_brightness_threshold: 35   # [0, 255]
+    led_detection_min_brightness_threshold: 175   # [0, 255]
     led_detection_max_brightness_threshold: 255  # [0, 255]
     led_detection_min_contour_size: 6            # [pixel]
     led_detection_max_contour_size: 60           # [pixel]

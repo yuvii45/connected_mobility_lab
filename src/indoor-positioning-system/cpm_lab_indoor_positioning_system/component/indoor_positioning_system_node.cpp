@@ -127,10 +127,11 @@ public:
       camera_->Gain.SetValue(0);
       // camera_->ExposureAuto.SetValue(Basler_UsbCameraParams::ExposureAuto_Continuous);
       // camera_->AutoTargetBrightness.SetValue(0.001);
-      camera_->ExposureTime.SetValue(750);
+      camera_->ExposureAuto.SetValue(Basler_UsbCameraParams::ExposureAuto_Off);
+      camera_->ExposureTime.SetValue(2000.0);
 
-      int desired_width = 2448;   // Example: Set width to 640 pixels
-      int desired_height = 2048;  // Example: Set height to 480 pixels
+      int desired_width = 2048;
+      int desired_height = 2048;  
 
       camera_->Width.SetValue(desired_width);
       camera_->Height.SetValue(desired_height);
