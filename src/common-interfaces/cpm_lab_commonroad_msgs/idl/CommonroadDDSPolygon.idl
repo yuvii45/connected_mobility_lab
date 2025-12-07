@@ -1,0 +1,14 @@
+// CommonroadDDSShape
+// Contains all commonroad shapes
+
+#include "CommonroadDDSPoint.idl"
+
+module cpm_common {
+    module msg {
+      // CommonroadDDSPolygon - Commonroad polygon definition.
+      struct CommonroadDDSPolygon {
+        // Corner points of the polygon.
+        sequence<cpm_common::msg::CommonroadDDSPoint> points;
+      };
+    };
+};

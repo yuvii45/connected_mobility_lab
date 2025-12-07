@@ -1,0 +1,16 @@
+// CommonroadDDSCircle
+// Contains a commonroad circle
+
+#include "CommonroadDDSPoint.idl"
+
+module cpm_common {
+    module msg {
+      // CommonroadDDSCircle - Commonroad circle definition.
+      struct CommonroadDDSCircle {
+        // Center of the circle.
+        cpm_common::msg::CommonroadDDSPoint center;
+        // Radius of the circle.
+        double radius;
+      };
+    };
+};

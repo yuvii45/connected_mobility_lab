@@ -1,0 +1,14 @@
+// CommonroadObstacleList
+// Provides commonroad obstacle state data for all simulated obstacles.
+
+#include "CommonroadObstacle.idl"
+
+module cpm_common {
+  module msg {
+    // CommonroadObstacleList - Provides commonroad obstacle state data for all simulated obstacles.
+    struct CommonroadObstacleList {
+      // List of commonroad obstacle data.
+      sequence<cpm_common::msg::CommonroadObstacle> commonroad_obstacle_list;
+    };
+  };
+};

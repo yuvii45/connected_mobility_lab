@@ -1,0 +1,35 @@
+// CommonroadDDSGoalState
+// Provides commonroad planning problem data to all participants (only goal states, due to size issues for whole planning problem)
+
+#include "Header.idl"
+#include "CommonroadDDSShape.idl"
+#include "CommonroadDDSPositionInterval.idl"
+#include "CommonroadDDSInterval.idl"
+
+module cpm_common {
+  module msg {
+    // CommonroadDDSGoalState - A single commonroad goal state.
+    struct CommonroadDDSGoalState {
+      // Time (interval) when the goal state should be reached, can be undefined (see time_set).
+      cpm_common::msg::CommonroadDDSInterval time;
+      // If false, ignore time.
+      boolean time_set;
+      // Ignore values in exact_position if this is false, and use positions instead.
+      boolean has_exact_position;
+      // Exact position of the goal state, as a point. Not part of the specs in the documentation, but nice to have.
+      cpm_common::msg::CommonroadDDSPoint exact_position;
+      // Inexact position of the goal state, can be undefined.
+      cpm_common::msg::CommonroadDDSPositionInterval position;
+      // Possible orientation value within the goal state, can be undefined.
+      cpm_common::msg::CommonroadDDSInterval orientation;
+      // Possible velocity values when the goal state is reached, can be undefined.
+      cpm_common::msg::CommonroadDDSInterval velocity;
+      //IDs to relate to planning problem and position in list planning problems and of goal states in planning problems in a single planning problem definition
+      //We could not send the whole planning problem due to size issues because of the sequences used
+      // Part of the ID of the goal state: ID of the planning problem.
+      uint32 planning_problem_id;
+      // Part of the ID of the goal state: Place within the list of goal states within a planning sub-problem.
+      uint32 goal_state_pos;
+    };
+  };
+};

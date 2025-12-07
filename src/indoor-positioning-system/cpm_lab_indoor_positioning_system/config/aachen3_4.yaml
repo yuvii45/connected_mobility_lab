@@ -1,0 +1,38 @@
+# Default IPS parameters for CPM Lab
+
+/**:
+  ros__parameters:
+
+    ## Number of vehicle state the IPS will listen to
+    number_vehicles: 20
+
+    ## LED detection
+    led_detection_min_brightness_threshold: 45   # [0, 255]
+    led_detection_max_brightness_threshold: 255  # [0, 255]
+    led_detection_min_contour_size: 3            # [pixel]
+    led_detection_max_contour_size: 60           # [pixel]
+
+
+    ## LED undistortion and projection
+    point_undistortion_camera_matrix: [1.76793639e+03, 0.00000000e+00, 1.19588706e+03, 0.00000000e+00, 2.03834478e+03, 9.97857401e+02, 0.00000000e+00, 0.00000000e+00, 1.00000000e+00]
+    point_undistortion_distortion_coefficients: [-0.35745551,  0.22052999,  0.        ,  0.        ,  0.        ]
+    point_projection_rotation_vector: [-0.79333495,  0.0363103 ,  0.02288051]
+    point_projection_translation_vector: [-1.73177121, -3.0720746 ,  7.17929304]
+
+
+
+    point_projection_led_height: -0.09        # [m]
+
+    point_projection_final_transformation: [
+      0.0, 1.0, -1.0,
+      1.0, 0.0, -0.15,
+      0.0, 0.0, 1.0
+    ]
+
+    ## Vehicle detection
+    vehicle_detection_distance_front_to_rear: 0.16515   # [m]
+    vehicle_detection_distance_rear_to_rear: 0.074      # [m]
+    vehicle_detection_angle_front_to_rear: 25.88        # [deg]
+
+    ## Vehicle tracking
+    vehicle_tracking_max_association_cost: 0.2  # [m]

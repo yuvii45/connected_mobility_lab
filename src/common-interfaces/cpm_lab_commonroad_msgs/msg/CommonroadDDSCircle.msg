@@ -1,0 +1,2 @@
+CommonroadDDSPoint center
+float64 radius

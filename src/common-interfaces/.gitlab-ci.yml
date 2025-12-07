@@ -1,0 +1,28 @@
+stages:
+  - code-quality-test
+  - check-for-uncrustify
+  - package-quality-test
+
+lint-cmake-job:   
+  stage: code-quality-test
+  image: docker.io/library/ros:jazzy-ros-base-noble
+  script:
+    - echo "Linting cmake..."
+    - ament_lint_cmake
+    - echo "No lint issues found in cmake file."
+
+check-xml-job:   
+  stage: package-quality-test
+  image: docker.io/library/ros:jazzy-ros-base-noble
+  script:
+    - echo "Linting xml..."
+    - ament_xmllint
+    - echo "No lint issues found in xml files."
+
+check-copyright-job:   
+  stage: package-quality-test
+  image: docker.io/library/ros:jazzy-ros-base-noble
+  script:
+    - echo "Check for copyright..."
+    - ament_copyright
+    - echo "No issues found with copyright notices in files."

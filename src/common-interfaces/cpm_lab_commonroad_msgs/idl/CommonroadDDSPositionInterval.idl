@@ -1,0 +1,20 @@
+// CommonroadDDSPositionInterval
+// Provides commonroad planning problem data to all participants (only goal states, due to size issues for whole planning problem)
+
+#include "CommonroadDDSShape.idl"
+
+module cpm_common {
+    module msg {
+      // CommonroadDDSPositionInterval - Commonroad inexact (combined from shapes for a position area) position definition.
+      struct CommonroadDDSPositionInterval {
+        // List of circles within which the position could lie.
+        sequence<cpm_common::msg::CommonroadDDSCircle> circles;
+        // List of polygons within which the position could lie.
+        sequence<cpm_common::msg::CommonroadDDSPolygon> polygons;
+        // List of rectangles within which the position could lie.
+        sequence<cpm_common::msg::CommonroadDDSRectangle> rectangles;
+        // These should rather not be used, because lanelets are currently not being transmitted to the HLCs.
+        sequence<int32> lanelet_refs;
+      };
+    };
+};

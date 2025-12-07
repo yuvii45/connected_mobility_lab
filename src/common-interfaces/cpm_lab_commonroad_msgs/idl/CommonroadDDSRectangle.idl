@@ -1,0 +1,20 @@
+// CommonroadDDSRectangle
+// Contains a commonroad rectangle
+
+#include "CommonroadDDSPoint.idl"
+
+module cpm_common {
+    module msg {
+      // CommonroadDDSRectangle - Commonroad rectangle definition.
+      struct CommonroadDDSRectangle {
+        // Rectangle length.
+        double length;
+        // Rectangle width.
+        double width;
+        // Rectangle center.
+        cpm_common::msg::CommonroadDDSPoint center;
+        // Rectangle orientation / rotation in rad.
+        double orientation;
+      };
+    };
+};

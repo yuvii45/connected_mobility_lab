@@ -1,0 +1,21 @@
+// CommonroadDDSShape
+// Contains all commonroad shapes
+
+#include "CommonroadDDSPoint.idl"
+#include "CommonroadDDSCircle.idl"
+#include "CommonroadDDSPolygon.idl"
+#include "CommonroadDDSRectangle.idl"
+
+module cpm_common {
+  module msg {
+    // CommonroadDDSShape - Commonroad shape definition. Shapes are constructed from circles, polygons and rectangles.
+    struct CommonroadDDSShape {
+      // Circles the shape consists of.
+      sequence<cpm_common::msg::CommonroadDDSCircle> circles;
+      // Polygons the shape consists of.
+      sequence<cpm_common::msg::CommonroadDDSPolygon> polygons;
+      // Rectangles the shape consists of.
+      sequence<cpm_common::msg::CommonroadDDSRectangle> rectangles;
+    };
+  };
+};

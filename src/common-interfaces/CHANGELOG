@@ -1,0 +1,9 @@
+Version 0.1.2
+- Adding new package cpm_lab_map_msgs allowing the distribution of lanelet2 maps
+- Move old maps to map component
+
+Version 0.1.1
+- Verison bump
+
+Version 0.1.0
+- Containing all .idl and .msg file used in the CPM Lab

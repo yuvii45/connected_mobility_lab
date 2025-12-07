@@ -1,0 +1,62 @@
+// CommonroadObstacles
+// Contains all information necessary to send information about commonroad obstacles
+
+#include "Header.idl"
+#include "Pose2D.idl"
+#include "CommonroadDDSShape.idl"
+
+module cpm_common {
+  module msg {
+    // ObstacleType - Possible types of obstacles, e.g. car or bicycle.
+    module ObstacleType {
+      //Dynamic
+      const uint8 Unknown = 0;
+      const uint8 Car = 1;
+      const uint8 Truck = 2;
+      const uint8 Bus = 3;
+      const uint8 Motorcycle = 4;
+      const uint8 Bicycle = 5;
+      const uint8 Pedestrian = 6;
+      const uint8 PriorityVehicle = 7;
+      const uint8 Train = 8;
+      const uint8 Taxi = 9;
+      //Static
+      const uint8 ParkedVehicle = 10;
+      const uint8 ConstructionZone = 11;
+      const uint8 RoadBoundary = 12;
+      //Environment
+      const uint8 Building = 13;
+      const uint8 Pillar = 14;
+      const uint8 MedianStrip = 15;
+    };
+
+    // ObstacleClass - Describes which obstacle class (w.r.t. Commonroad) an obstacle belongs to: Dynamic, Static, Environment.
+    module ObstacleClass {
+      const uint8 Dynamic = 0;
+      const uint8 Static = 1;
+      const uint8 Environment = 2;
+    };
+
+    // CommonroadObstacle - Provides data for simulated commonroad obstacles.
+    struct CommonroadObstacle {
+      // An ID can be set for each obstacle.
+      uint8 vehicle_id;
+      // There is no need to distinguish between create and valid after stamp in this case.
+      cpm_common::msg::Header timings;
+      // Shows whether the obstacle is moving or not (moving /= dynamic or static obstacle, some obstacles are defined as dynamic but do not move).
+      boolean is_moving;
+      // Pose contains vehicle orientation and position, but these values must not be exact.
+      cpm_common::msg::Pose2D pose;
+      // Tells if values in pose are exact or only average values.
+      boolean pose_is_exact;
+      // The type of obstacle, e.g. car.
+      uint8 type;
+      // The obstacle class the obstacle belongs to (dynamic, static, environment).
+      uint8 obstacle_class;
+      // Optional value which defines a shape, especially useful if the occupancy type was used. But: also useful for visualizing lanelet references or inexact positional values.
+      cpm_common::msg::CommonroadDDSShape shape;
+      // Speed in m/s.
+      double speed;
+    };
+  };
+};

@@ -1,0 +1,9 @@
+CommonroadDDSInterval time
+bool time_set
+bool has_exact_position
+CommonroadDDSPoint exact_position
+CommonroadDDSPositionInterval position
+CommonroadDDSInterval orientation
+CommonroadDDSInterval velocity
+uint32 planning_problem_id
+uint32 goal_state_pos

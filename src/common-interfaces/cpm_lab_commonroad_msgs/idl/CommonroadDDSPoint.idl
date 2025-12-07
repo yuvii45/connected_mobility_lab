@@ -1,0 +1,15 @@
+// CommonroadDDSPoint
+// Commonroad coordinate
+
+module cpm_common {
+    module msg {
+      // CommonroadDDSPoint - If a point does not exist in the commonroad representation, a default value of (0, 0) is chosen instead.
+      struct CommonroadDDSPoint {
+        // X position.
+        double x;
+        // Y position.
+        double y;
+        // Z is omitted
+      };
+    };
+};

@@ -1,0 +1,72 @@
+variables:
+  IMAGE_NAME: "docker.io/library/ros:jazzy-ros-base-noble"
+
+stages:
+  - code-quality-test
+  - check-for-uncrustify
+  - package-quality-test
+  - code-analysis-test
+
+lint-cmake-job:   
+  stage: code-quality-test
+  image: 
+    name: ${IMAGE_NAME}
+  script:
+    - echo "Linting cmake..."
+    - ament_lint_cmake
+    - echo "No lint issues found in cmake file."
+
+lint-cpp-job:   
+  stage: code-quality-test
+  image: 
+    name: ${IMAGE_NAME}
+  script:
+    - echo "Linting cpp..."
+    - ament_cpplint --exclude $(cat EXCLUDE_FROM_TEST)
+    - echo "No lint issues found in cpp files."
+
+lint-python-job:   
+  stage: code-quality-test
+  image: 
+    name: ${IMAGE_NAME}
+  script:
+    - echo "Linting pyhton..."
+    - ament_flake8 --exclude $(cat EXCLUDE_FROM_TEST)
+    - echo "No lint issues found in pyhton files."
+
+uncrustify-check-job:   
+  stage: check-for-uncrustify
+  image: 
+    name: ${IMAGE_NAME}
+  script:
+    - echo "Checking uncrustify..."
+    - ament_uncrustify --exclude $(cat EXCLUDE_FROM_TEST)
+    - echo "No issues found with uncrustify."
+
+check-xml-job:   
+  stage: package-quality-test
+  image: 
+    name: ${IMAGE_NAME}
+  script:
+    - echo "Linting xml..."
+    - ament_xmllint --exclude $(cat EXCLUDE_FROM_TEST)
+    - echo "No lint issues found in xml files."
+
+check-copyright-job:   
+  stage: package-quality-test
+  image: 
+    name: ${IMAGE_NAME}
+  script:
+    - echo "Check for copyright..."
+    - ament_copyright --exclude $(cat EXCLUDE_FROM_TEST)
+    - echo "No issues found with copyright notices in files."
+
+analyse-cpp-job:   
+  stage: code-analysis-test
+  image: 
+    name: ${IMAGE_NAME}
+  script:
+    - echo "Analyse cpp..."
+    - export AMENT_CPPCHECK_ALLOW_SLOW_VERSIONS=1
+    - ament_cppcheck --exclude $(cat EXCLUDE_FROM_TEST)
+    - echo "No issues found in static analysis of cpp files."

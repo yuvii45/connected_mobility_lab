@@ -1,0 +1,14 @@
+// CommonroadDDSInterval
+// Provides commonroad planning problem data to all participants (only goal states, due to size issues for whole planning problem)
+
+module cpm_common {
+    module msg {
+      // CommonroadDDSInterval - n interval with which inexact positions can be provided. If intervals or exact values are possible, intervals with the same start and end value are being provided.
+      struct CommonroadDDSInterval {
+        // First value of the interval.
+        double interval_start;
+        // Last value of the interval.
+        double interval_end;
+      };
+    };
+};
