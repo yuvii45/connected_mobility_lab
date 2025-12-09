@@ -96,8 +96,7 @@ void IndoorPositioningSystem::apply(const cv::Mat & image, const double frame_ti
   warning_ = false;
   warning_message_ = "";
 
-
-  led_points_ = led_detection_->apply(image);
+  led_points_ = led_detection_->apply(image); // got the points from image
 
   if (led_points_.empty()) {
     error_message_ = "No LED points detected.";
@@ -112,23 +111,29 @@ void IndoorPositioningSystem::apply(const cv::Mat & image, const double frame_ti
     return;
   }
 
+  std::cout << "LED points detected: " << led_points_.size() << std::endl;
   image_points_ = point_undistortion_->apply(led_points_);
-  floor_points_ = point_projection_->apply(image_points_);
-  possible_vehicle_points_ = vehicle_detection_->apply(floor_points_);
-  vehicle_points_ = vehicle_identification_->apply(possible_vehicle_points_);
-  vehicle_observations_ = pose_calculation_->apply(vehicle_points_, frame_time);
-  feedback_identifier_->assign(vehicle_observations_, frame_time, vehicle_states_);
 
-  const size_t unassigned = std::count_if(
-  vehicle_observations_.begin(), vehicle_observations_.end(),
-    [](const auto & obs) {return obs.vehicle_id < 1;});
-
-  if (unassigned != 0) {
-    warning_message_ = "Detected " + std::to_string(led_points_.size()) +
-      " LED points resulting in " + std::to_string(vehicle_observations_.size()) +
-      " observations but " + std::to_string(unassigned) + " of them could not be identified.";
-    warning_ = true;
+  for (auto &pt: image_points_) {
+    std::cout << "Image Point: (" << pt.x << ", " << pt.y << ")" << std::endl;
   }
+  std::cout << std::endl;
+  // floor_points_ = point_projection_->apply(image_points_);
+  // possible_vehicle_points_ = vehicle_detection_->apply(floor_points_);
+  // vehicle_points_ = vehicle_identification_->apply(possible_vehicle_points_);
+  // vehicle_observations_ = pose_calculation_->apply(vehicle_points_, frame_time);
+  // feedback_identifier_->assign(vehicle_observations_, frame_time, vehicle_states_);
+
+  // const size_t unassigned = std::count_if(
+  // vehicle_observations_.begin(), vehicle_observations_.end(),
+  //   [](const auto & obs) {return obs.vehicle_id < 1;});
+
+  // if (unassigned != 0) {
+  //   warning_message_ = "Detected " + std::to_string(led_points_.size()) +
+  //     " LED points resulting in " + std::to_string(vehicle_observations_.size()) +
+  //     " observations but " + std::to_string(unassigned) + " of them could not be identified.";
+  //   warning_ = true;
+  // }
 }
 
 void IndoorPositioningSystem::resetTracking()

@@ -34,8 +34,16 @@ using ImagePoints = std::vector<cv::Point2d>;
 class PointUndistortion
 {
 private:
-  cv::Mat camera_matrix_;             // Camera intrinsic matrix
-  cv::Mat distortion_coeffs_;         // Distortion coefficients
+    std::vector<double> calibration_x_;
+    std::vector<double> calibration_y_;
+
+    double projection_image_scale_;
+
+    double projection_camera_x_;
+    double projection_camera_y_;
+    double projection_camera_z_;
+
+    double projection_led_z_;
 
 public:
   explicit PointUndistortion(const IndoorPositioningSystemParameter & parameters);

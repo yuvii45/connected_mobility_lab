@@ -176,6 +176,52 @@ public:
       }
     }
 
+    // --- Projection calibration X ---
+    RCLCPP_DEBUG(logger, "---> projection_calibration_x");
+    if (!nh.has_parameter("projection_calibration_x")) {
+      nh.declare_parameter("projection_calibration_x", rclcpp::PARAMETER_DOUBLE_ARRAY);
+    }
+    nh.get_parameter("projection_calibration_x", projection_calibration_x_);
+    RCLCPP_INFO(logger, "projection_calibration_x: %zu elements", projection_calibration_x_.size());
+
+    // --- Projection calibration Y ---
+    RCLCPP_DEBUG(logger, "---> projection_calibration_y");
+    if (!nh.has_parameter("projection_calibration_y")) {
+      nh.declare_parameter("projection_calibration_y", rclcpp::PARAMETER_DOUBLE_ARRAY);
+    }
+    nh.get_parameter("projection_calibration_y", projection_calibration_y_);
+    RCLCPP_INFO(logger, "projection_calibration_y: %zu elements", projection_calibration_y_.size());
+
+    // --- Projection image scale ---
+    RCLCPP_DEBUG(logger, "---> projection_image_scale");
+    nh.declare_parameter("projection_image_scale", rclcpp::PARAMETER_DOUBLE);
+    nh.get_parameter("projection_image_scale", projection_image_scale_);
+    RCLCPP_INFO(logger, "projection_image_scale: %f", projection_image_scale_);
+
+    // --- Projection camera X ---
+    RCLCPP_DEBUG(logger, "---> projection_camera_x");
+    nh.declare_parameter("projection_camera_x", rclcpp::PARAMETER_DOUBLE);
+    nh.get_parameter("projection_camera_x", projection_camera_x_);
+    RCLCPP_INFO(logger, "projection_camera_x: %f", projection_camera_x_);
+
+    // --- Projection camera Y ---
+    RCLCPP_DEBUG(logger, "---> projection_camera_y");
+    nh.declare_parameter("projection_camera_y", rclcpp::PARAMETER_DOUBLE);
+    nh.get_parameter("projection_camera_y", projection_camera_y_);
+    RCLCPP_INFO(logger, "projection_camera_y: %f", projection_camera_y_);
+
+    // --- Projection camera Z ---
+    RCLCPP_DEBUG(logger, "---> projection_camera_z");
+    nh.declare_parameter("projection_camera_z", rclcpp::PARAMETER_DOUBLE);
+    nh.get_parameter("projection_camera_z", projection_camera_z_);
+    RCLCPP_INFO(logger, "projection_camera_z: %f", projection_camera_z_);
+
+    // --- Projection LED Z ---
+    RCLCPP_DEBUG(logger, "---> projection_led_z");
+    nh.declare_parameter("projection_led_z", rclcpp::PARAMETER_DOUBLE);
+    nh.get_parameter("projection_led_z", projection_led_z_);
+    RCLCPP_INFO(logger, "projection_led_z: %f", projection_led_z_);
+
     // Validate parameters
     validateParameterSet();
   }
@@ -213,6 +259,22 @@ public:
       RCLCPP_WARN(logger, "Invalid translation matrix size: %zu. Expected 3 elements.",
                   point_projection_translation_vector_.size());
       point_projection_translation_vector_ = std::vector<double>(3, 0.0);
+    }
+
+        // Validate projection calibration
+    if (projection_calibration_x_.empty()) {
+      RCLCPP_WARN(logger, "projection_calibration_x is empty!");
+      projection_calibration_x_ = std::vector<double>(10, 0.0);   // or any expected size
+    }
+
+    if (projection_calibration_y_.empty()) {
+      RCLCPP_WARN(logger, "projection_calibration_y is empty!");
+      projection_calibration_y_ = std::vector<double>(10, 0.0);   // or any expected size
+    }
+
+    if (projection_image_scale_ <= 0.0) {
+      RCLCPP_WARN(logger, "projection_image_scale is invalid, resetting to 1.0!");
+      projection_image_scale_ = 1.0;
     }
   }
 };

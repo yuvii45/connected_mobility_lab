@@ -56,6 +56,16 @@ protected:
 
   double vehicle_tracking_max_association_cost_ = 0.5;
 
+  // Projection calibration parameters
+  std::vector<double> projection_calibration_x_{};
+  std::vector<double> projection_calibration_y_{};
+
+  double projection_image_scale_ = 1.0;
+  double projection_camera_x_ = 0.0;
+  double projection_camera_y_ = 0.0;
+  double projection_camera_z_ = 0.0;
+  double projection_led_z_ = 0.0;
+
 public:
   [[nodiscard]] int numberVehicles() const;
 
@@ -68,10 +78,6 @@ public:
   [[nodiscard]] int ledDetectionMaxContourSize() const;
 
   [[nodiscard]] double pointProjectionLedHeight() const;
-
-  [[nodiscard]] const std::vector<double> & pointUndistortionCameraMatrix() const;
-
-  [[nodiscard]] const std::vector<double> & pointUndistortionDistortionCoefficients() const;
 
   [[nodiscard]] const std::vector<double> & pointProjectionRotationVector() const;
 
@@ -86,6 +92,16 @@ public:
   [[nodiscard]] double vehicleDetectionAngleFrontToRear() const;
 
   [[nodiscard]] double vehicleTrackingMaxAssociationCost() const;
+
+  [[nodiscard]] const std::vector<double> & getProjectionCalibrationX() const;
+  [[nodiscard]] const std::vector<double> & getProjectionCalibrationY() const;
+
+  [[nodiscard]] double getProjectionImageScale() const;
+  [[nodiscard]] double getProjectionCameraX() const;
+  [[nodiscard]] double getProjectionCameraY() const;
+  [[nodiscard]] double getProjectionCameraZ() const;
+  [[nodiscard]] double getProjectionLedZ() const;
+
 };
 
 }  // namespace indoor_positioning_system

@@ -22,6 +22,7 @@
 #include <iostream>
 
 #include <opencv2/imgproc.hpp>
+#include <opencv2/opencv.hpp>
 
 #include "indoor_positioning_system/LedDetection.hpp"
 
@@ -38,32 +39,35 @@ LedDetection::LedDetection(const IndoorPositioningSystemParameter & parameters)
 
 std::vector<cv::Point2d> LedDetection::apply(const cv::Mat& image)
 {
-     // Step 1: Blur to reduce noise
-     cv::Mat blurred;
-     cv::GaussianBlur(image, blurred, cv::Size(3, 3), 1);
+    std::vector<cv::Point2d> led_points;
 
-     // Step 2: Find local maxima (dilate and compare)
-     cv::Mat dilated, local_max;
-     cv::dilate(blurred, dilated, cv::Mat());
-     cv::compare(blurred, dilated, local_max, cv::CMP_EQ);
+    cv::Mat img_binary;
+    cv::threshold(image, img_binary, 150, 255, cv::THRESH_BINARY);
 
-     // Step 3: Threshold bright points
-     cv::Mat thresholded;
-     cv::threshold(blurred, thresholded, min_brightness_threshold_, max_brightness_threshold_, cv::THRESH_BINARY);
+    std::vector<std::vector<cv::Point>> contours;
+    cv::findContours(img_binary, contours, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
 
-     // Step 4: Combine local maxima with threshold mask
-     cv::Mat local_max_thresh;
-     cv::bitwise_and(local_max, thresholded, local_max_thresh);
+    for (std::vector<cv::Point> contour : contours)
+    {
+      double size = cv::contourArea(contour);
+      // RCLCPP_INFO(this->get_logger(), "size = %f", size);
+      if (!(size < 60 && size > 3))
+      {
+        continue;
+      }
 
-     // Step 5: Extract bright spot locations efficiently
-     std::vector<cv::Point> nonzero_points;
-     cv::findNonZero(local_max_thresh, nonzero_points);
+      cv::Moments M = cv::moments(contour);
+      float x = (M.m10 / (M.m00 + 1e-5));
+      float y = (M.m01 / (M.m00 + 1e-5));
+      led_points.push_back({ x, y });
+      // RCLCPP_INFO(this->get_logger(), "x = %f, y = %f", x, y);
+    }
 
-     // Step 6: Convert to Point2d (subpixel not needed for LEDs)
-     std::vector<cv::Point2d> led_points;
-     led_points.reserve(nonzero_points.size());
-     for (const auto& pt : nonzero_points)
-         led_points.emplace_back(pt);
+    cv::namedWindow("LED Mask", cv::WINDOW_NORMAL);
+    cv::resizeWindow("LED Mask", 1024, 1024);
+    cv::imshow("LED Mask", img_binary);
+    cv::waitKey(1);
 
-     return led_points;
+    return led_points;
+}
 }

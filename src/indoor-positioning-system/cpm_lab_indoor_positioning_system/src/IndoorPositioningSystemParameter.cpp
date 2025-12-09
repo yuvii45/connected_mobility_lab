@@ -54,16 +54,16 @@ double IndoorPositioningSystemParameter::pointProjectionLedHeight() const
   return point_projection_led_height_;
 }
 
-const std::vector<double> & IndoorPositioningSystemParameter::pointUndistortionCameraMatrix() const
-{
-  return point_undistortion_camera_matrix_;
-}
+// const std::vector<double> & IndoorPositioningSystemParameter::pointUndistortionCameraMatrix() const
+// {
+//   return point_undistortion_camera_matrix_;
+// }
 
-const std::vector<double> & IndoorPositioningSystemParameter::
-pointUndistortionDistortionCoefficients() const
-{
-  return point_undistortion_distortion_coefficients_;
-}
+// const std::vector<double> & IndoorPositioningSystemParameter::
+// pointUndistortionDistortionCoefficients() const
+// {
+//   return point_undistortion_distortion_coefficients_;
+// }
 
 const std::vector<double> & IndoorPositioningSystemParameter::pointProjectionRotationVector() const
 {
@@ -100,6 +100,41 @@ double IndoorPositioningSystemParameter::vehicleDetectionAngleFrontToRear() cons
 double IndoorPositioningSystemParameter::vehicleTrackingMaxAssociationCost() const
 {
   return vehicle_tracking_max_association_cost_;
+}
+
+const std::vector<double> & IndoorPositioningSystemParameter::getProjectionCalibrationX() const
+{
+  return projection_calibration_x_;
+}
+
+const std::vector<double> & IndoorPositioningSystemParameter::getProjectionCalibrationY() const
+{
+  return projection_calibration_y_;
+}
+
+double IndoorPositioningSystemParameter::getProjectionImageScale() const
+{
+  return projection_image_scale_;
+}
+
+double IndoorPositioningSystemParameter::getProjectionCameraX() const
+{
+  return projection_camera_x_;
+}
+
+double IndoorPositioningSystemParameter::getProjectionCameraY() const
+{
+  return projection_camera_y_;
+}
+
+double IndoorPositioningSystemParameter::getProjectionCameraZ() const
+{
+  return projection_camera_z_;
+}
+
+double IndoorPositioningSystemParameter::getProjectionLedZ() const
+{
+  return projection_led_z_;
 }
 
 }  // namespace indoor_positioning_system
