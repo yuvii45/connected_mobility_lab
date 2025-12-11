@@ -38,7 +38,6 @@ add_library(${PROJECT_NAME}_core SHARED
   src/PoseCalculation.cpp
   src/VehicleIdentification.cpp
   src/VehicleDetection.cpp
-  src/PointProjection.cpp
   src/VehicleTracking.cpp
 )
 

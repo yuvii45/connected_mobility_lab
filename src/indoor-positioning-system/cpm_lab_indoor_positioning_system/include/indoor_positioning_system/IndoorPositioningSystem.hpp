@@ -32,7 +32,6 @@
 #include "indoor_positioning_system/VehicleIdentification.hpp"
 #include "indoor_positioning_system/PoseCalculation.hpp"
 #include "indoor_positioning_system/PointUndistortion.hpp"
-#include "indoor_positioning_system/PointProjection.hpp"
 #include "indoor_positioning_system/LedDetection.hpp"
 #include "indoor_positioning_system/VehicleTracking.hpp"
 
@@ -51,7 +50,6 @@ private:
   std::shared_ptr<VehicleDetection> vehicle_detection_;
   std::shared_ptr<VehicleIdentification> vehicle_identification_;
   std::shared_ptr<PoseCalculation> pose_calculation_;
-  std::shared_ptr<PointProjection> point_projection_;
   std::shared_ptr<VehicleTracking> feedback_identifier_;
 
   ImagePoints led_points_;

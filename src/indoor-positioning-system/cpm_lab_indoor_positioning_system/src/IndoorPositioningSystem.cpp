@@ -31,7 +31,6 @@ IndoorPositioningSystem::IndoorPositioningSystem(
 {
   led_detection_ = std::make_shared<LedDetection>(parameters);
   point_undistortion_ = std::make_shared<PointUndistortion>(parameters);
-  point_projection_ = std::make_shared<PointProjection>(parameters);
   vehicle_detection_ = std::make_shared<VehicleDetection>(parameters);
   vehicle_identification_ = std::make_shared<VehicleIdentification>(parameters);
   pose_calculation_ = std::make_shared<PoseCalculation>(parameters);
@@ -118,7 +117,6 @@ void IndoorPositioningSystem::apply(const cv::Mat & image, const double frame_ti
     std::cout << "Image Point: (" << pt.x << ", " << pt.y << ")" << std::endl;
   }
   std::cout << std::endl;
-  // floor_points_ = point_projection_->apply(image_points_);
   // possible_vehicle_points_ = vehicle_detection_->apply(floor_points_);
   // vehicle_points_ = vehicle_identification_->apply(possible_vehicle_points_);
   // vehicle_observations_ = pose_calculation_->apply(vehicle_points_, frame_time);

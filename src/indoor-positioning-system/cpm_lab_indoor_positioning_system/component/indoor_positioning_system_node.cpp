@@ -64,7 +64,6 @@ public:
     last_frame_count_time_ = now();
     time_of_last_led_request_ = now();
 
-    // Initialise camera
     initialise_camera();
 
     // Creating ROS2 communication channels
@@ -125,8 +124,6 @@ public:
           Basler_UsbCameraParams::DeviceLinkThroughputLimitMode_Off);
       camera_->GainAuto.SetValue(Basler_UsbCameraParams::GainAuto_Off);
       camera_->Gain.SetValue(0);
-      // camera_->ExposureAuto.SetValue(Basler_UsbCameraParams::ExposureAuto_Continuous);
-      // camera_->AutoTargetBrightness.SetValue(0.001);
       camera_->ExposureAuto.SetValue(Basler_UsbCameraParams::ExposureAuto_Off);
       camera_->ExposureTime.SetValue(1000.0);
 
@@ -140,7 +137,6 @@ public:
     } catch(const Pylon::GenericException & e) {
       RCLCPP_ERROR(get_logger(), "Error while opening camera %s", e.what());
     }
-    // camera_->StartGrabbing(Pylon::EGrabStrategy::GrabStrategy_OneByOne);
   }
 
   void uninitialize_camera()
