@@ -111,13 +111,18 @@ void IndoorPositioningSystem::apply(const cv::Mat & image, const double frame_ti
   }
 
   std::cout << "LED points detected: " << led_points_.size() << std::endl;
-  image_points_ = point_undistortion_->apply(led_points_);
-
-  for (auto &pt: image_points_) {
-    std::cout << "Image Point: (" << pt.x << ", " << pt.y << ")" << std::endl;
+  image_points_ = point_undistortion_->apply(led_points_); 
+  
+  floor_points_.clear();
+  floor_points_.reserve(image_points_.size());
+  
+  for (const auto& p : image_points_) {
+      floor_points_.emplace_back(p.x, p.y);
+      std::cout << p.x << " " << p.y << std::endl;
   }
   std::cout << std::endl;
-  // possible_vehicle_points_ = vehicle_detection_->apply(floor_points_);
+
+  possible_vehicle_points_ = vehicle_detection_->apply(floor_points_);
   // vehicle_points_ = vehicle_identification_->apply(possible_vehicle_points_);
   // vehicle_observations_ = pose_calculation_->apply(vehicle_points_, frame_time);
   // feedback_identifier_->assign(vehicle_observations_, frame_time, vehicle_states_);
