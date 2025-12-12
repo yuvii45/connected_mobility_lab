@@ -137,4 +137,14 @@ double IndoorPositioningSystemParameter::getProjectionLedZ() const
   return projection_led_z_;
 }
 
+const std::vector<int> & IndoorPositioningSystemParameter::getVehicleLedPeriodTicks() const
+{
+  return vehicle_led_period_ticks_;
+}
+
+const std::vector<int> & IndoorPositioningSystemParameter::getVehicleLedEnabledTicks() const
+{
+  return vehicle_led_enabled_ticks_;
+}
+
 }  // namespace indoor_positioning_system

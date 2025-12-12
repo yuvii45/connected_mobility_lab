@@ -7,9 +7,9 @@
     number_vehicles: 20
 
     ## LED detection
-    led_detection_min_brightness_threshold: 100   # [0, 255]
+    led_detection_min_brightness_threshold: 180   # [0, 255]
     led_detection_max_brightness_threshold: 255  # [0, 255]
-    led_detection_min_contour_size: 6            # [pixel]
+    led_detection_min_contour_size: 10            # [pixel]
     led_detection_max_contour_size: 60           # [pixel]
 
     ## LED undistortion and projection
@@ -28,3 +28,9 @@
 
     ## Vehicle tracking
     vehicle_tracking_max_association_cost: 0.2  # [m]
+
+    ## Vehicle LED ID parameters
+    # 50Hz Camera. 5Hz Blink = 10 ticks period. ~50% duty cycle = 5 ticks enabled.
+    # Entry 0 is dummy. Entries 1-20 match vehicle IDs.
+    vehicle_led_period_ticks: [0, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
+    vehicle_led_enabled_ticks: [0, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5]

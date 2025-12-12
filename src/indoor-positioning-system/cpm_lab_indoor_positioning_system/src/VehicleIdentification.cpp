@@ -19,51 +19,151 @@
 // THE SOFTWARE.
 
 
+#include "indoor_positioning_system/VehicleIdentification.hpp"
 #include <iostream>
 #include <utility>
+#include <vector>
+#include <rclcpp/rclcpp.hpp>
 
-#include "indoor_positioning_system/VehicleIdentification.hpp"
+namespace indoor_positioning_system {
+    VehicleIdentification::VehicleIdentification(const IndoorPositioningSystemParameter &parameters)
+            : identification_LED_period_ticks(parameters.getVehicleLedPeriodTicks()),
+              identification_LED_enabled_ticks(parameters.getVehicleLedEnabledTicks()) {}
 
-namespace indoor_positioning_system
-{
-VehicleIdentification::VehicleIdentification(
-  const IndoorPositioningSystemParameter & /*parameters*/)
-{
+    void VehicleIdentification::setRequestedVehicleId(const int /*vehicle_id*/) {
+        // Functionality not used in new implementation but required by interface
+    }
+
+    struct VehicleTrackingInfo {
+        bool center_present = false;
+        cv::Point2d centroid;
+    };
+    struct SignalEdge {
+        int position;
+        bool is_rising;
+    };
+
+    VehiclePoints VehicleIdentification::apply(const VehiclePointTimeseries &vehiclePointTimeseries) {
+        VehiclePoints result;
+        if (vehiclePointTimeseries.empty()) return result;
+
+        // We want to identify the vehicles in the most recent frame: vehiclePointTimeseries.back().
+        // Algorithm: Iterate backwards in time, and track which vehicle is
+        // which by distance. A vehicle can move no more than 0.1 meters per frame.
+        // Then for each vehicle, count the consecutive frames where the center LED is on/off.
+        // The pair of (on/off) counts maps to a vehicle ID.
+
+        // This will hold a sort-of transpose of the vehilces over time:
+        // The outer index corresponds to a vehicle.
+        // The inner index corresponds to a point in time, in reverse chronological order.
+        std::vector<std::vector<VehicleTrackingInfo> > vehicles_tracked_by_proximity;
+
+
+        // Add the most recent vehicle. This is the starting point for the tracking.
+        auto iter = vehiclePointTimeseries.rbegin();
+        for (const auto &vehicle: *iter) {
+            VehicleTrackingInfo vehicleTrackingInfo;
+            auto centroid_eigen = (1.0 / 3) * (vehicle.front + vehicle.back_left + vehicle.back_right);
+            vehicleTrackingInfo.centroid = cv::Point2d(centroid_eigen.x(), centroid_eigen.y());
+            vehicleTrackingInfo.center_present = vehicle.center_present;
+
+            vehicles_tracked_by_proximity.push_back(
+                    std::vector<VehicleTrackingInfo>{vehicleTrackingInfo}
+            );
+        }
+
+        // Iterate backwards in time. Track vehicles by distance.
+        ++iter;
+        for (size_t step_count = 1; iter != vehiclePointTimeseries.rend(); ++iter, ++step_count) {
+            // For each tracked vehicle, find the corresponding vehicle in the previous frame.
+            for (auto &tracked_vehicle: vehicles_tracked_by_proximity) {
+                // Check if the tracking has been lost.
+                // This happens when a vehicle is not detected in a frame.
+                if (tracked_vehicle.size() == step_count) {
+                    bool is_previous_vehicle_found = false;
+                    // Search for the vehicle, which corresponds to "tracked_vehicle".
+                    for (const auto &previous_vehicle: *iter) {
+                         auto centroid_eigen = (1.0 / 3) * (previous_vehicle.front + previous_vehicle.back_left +
+                                                                previous_vehicle.back_right);
+                        const cv::Point2d centroid = cv::Point2d(centroid_eigen.x(), centroid_eigen.y());
+                        
+                        const auto delta = tracked_vehicle.back().centroid - centroid;
+                        const double max_distance_per_frame_squared = 0.09 * 0.09;
+
+                        // TODO: Check for smallest distance? Log warning if more than one candidate is found
+                        if (delta.dot(delta) < max_distance_per_frame_squared) {
+                            // Matching vehicle found, add to tracking.
+                            VehicleTrackingInfo vehicleTrackingInfo;
+                            vehicleTrackingInfo.centroid = centroid;
+                            vehicleTrackingInfo.center_present = previous_vehicle.center_present;
+                            tracked_vehicle.push_back(vehicleTrackingInfo);
+                            if (is_previous_vehicle_found) {
+                                RCLCPP_WARN(rclcpp::get_logger("IPS"), "Found multiple vehicle candidates.");
+                            }
+                            is_previous_vehicle_found = true;
+                        }
+                    }
+                    // if (!is_previous_vehicle_found) {
+                    //     RCLCPP_INFO(rclcpp::get_logger("IPS"), "New vehicle or unstable detection.");
+                    // }
+                } else {
+                    // Tracking is lost. Do nothing.
+                }
+            }
+        }
+
+
+        // The vehicles are now tracked, each vehicles_tracked_by_proximity[i]
+        // corresponds to a particular physical vehicle.
+        // Now extract the ID of each vehicle.
+
+        result = vehiclePointTimeseries.back();
+
+        for (size_t vehicle_index = 0; vehicle_index < vehicles_tracked_by_proximity.size(); ++vehicle_index) {
+            auto &vehicle = vehicles_tracked_by_proximity[vehicle_index];
+
+            // Find signal edges
+            std::vector<SignalEdge> signal_edges;
+            for (size_t i = 0; i < vehicle.size() - 1; ++i) {
+                if (!(vehicle.at(i).center_present) && (vehicle.at(i + 1).center_present)) {
+                    SignalEdge edge{};
+                    edge.position = i;
+                    edge.is_rising = true;
+                    //std::cout << "rising " << i << std::endl;
+                    signal_edges.push_back(edge);
+                } else if ((vehicle.at(i).center_present) && !(vehicle.at(i + 1).center_present)) {
+                    SignalEdge edge{};
+                    edge.position = i;
+                    edge.is_rising = false;
+                    //std::cout << "falling " << i << std::endl;
+                    signal_edges.push_back(edge);
+                }
+            }
+
+            // Find vehicle ID, based on signal edges
+            if (signal_edges.size() >= 3) {
+                int total_frames = signal_edges[2].position - signal_edges[0].position;
+                int high_frames = 0;
+
+                if (signal_edges[0].is_rising) {
+                    high_frames = signal_edges[1].position - signal_edges[0].position;
+                } else {
+                    high_frames = signal_edges[2].position - signal_edges[1].position;
+                }
+
+                for (size_t vehicle_id = 1; vehicle_id < identification_LED_enabled_ticks.size(); ++vehicle_id) {
+                    int delta_high = high_frames - identification_LED_enabled_ticks.at(vehicle_id);
+                    int delta_total = total_frames - identification_LED_period_ticks.at(vehicle_id);
+
+                    if (-1 <= delta_high && delta_high <= 1
+                        && -1 <= delta_total && delta_total <= 1) {
+                        result.at(vehicle_index).id = vehicle_id;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
 }
-
-void VehicleIdentification::reset()
-{
-  id_request_matched_ = true;
-  requested_vehicle_id_ = 0;
-}
-
-void VehicleIdentification::setRequestedVehicleId(const int vehicle_id)
-{
-  id_request_matched_ = false;
-  requested_vehicle_id_ = vehicle_id;
-}
-
-VehiclePointSets VehicleIdentification::apply(const VehiclePointSets & vehicle_points)
-{
-  VehiclePointSets result = vehicle_points;
-
-  if (id_request_matched_) {
-    return result;
-  }
-
-
-  for (auto & point_set : result) {
-    if(point_set.id != 0) {continue;}
-    if(!point_set.center_present) {continue;}
-
-    point_set.id = requested_vehicle_id_;
-    std::cout <<
-      "Assign vehicle id " + std::to_string(requested_vehicle_id_) + " via center LED." <<
-      std::endl;
-
-    reset();
-  }
-
-  return result;
-}
-}  // namespace indoor_positioning_system

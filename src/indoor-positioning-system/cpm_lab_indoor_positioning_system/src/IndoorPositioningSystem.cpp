@@ -119,9 +119,14 @@ void IndoorPositioningSystem::apply(const cv::Mat & image, const double frame_ti
       floor_points_.emplace_back(p.x, p.y);
   }
   possible_vehicle_points_ = vehicle_detection_->apply(floor_points_);
-  vehicle_points_ = vehicle_identification_->apply(possible_vehicle_points_);
-  // vehicle_observations_ = pose_calculation_->apply(vehicle_points_, frame_time);
-  // feedback_identifier_->assign(vehicle_observations_, frame_time, vehicle_states_);
+  vehicle_point_history_.push_back(possible_vehicle_points_);
+  if (vehicle_point_history_.size() > 100) {
+    vehicle_point_history_.erase(vehicle_point_history_.begin());
+  }
+
+  vehicle_points_ = vehicle_identification_->apply(vehicle_point_history_);
+  vehicle_observations_ = pose_calculation_->apply(vehicle_points_, frame_time);
+  feedback_identifier_->assign(vehicle_observations_, frame_time, vehicle_states_);
 
   // const size_t unassigned = std::count_if(
   // vehicle_observations_.begin(), vehicle_observations_.end(),

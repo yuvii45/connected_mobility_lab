@@ -49,6 +49,7 @@ target_include_directories(${PROJECT_NAME}_core PUBLIC
 target_link_libraries(${PROJECT_NAME}_core
   Eigen3::Eigen
   ${OpenCV_LIBS}
+  rclcpp::rclcpp
 )
 ament_target_dependencies(${PROJECT_NAME}_core
   cv_bridge

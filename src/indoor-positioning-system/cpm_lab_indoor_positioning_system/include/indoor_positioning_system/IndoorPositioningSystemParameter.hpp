@@ -42,6 +42,9 @@ protected:
   int led_detection_min_contour_size_ = 0;
   int led_detection_max_contour_size_ = 1000;
 
+  std::vector<int> vehicle_led_period_ticks_{};
+  std::vector<int> vehicle_led_enabled_ticks_{};
+
   double point_projection_led_height_ = 0.0;
 
   std::vector<double> point_undistortion_camera_matrix_{};
@@ -101,6 +104,10 @@ public:
   [[nodiscard]] double getProjectionCameraY() const;
   [[nodiscard]] double getProjectionCameraZ() const;
   [[nodiscard]] double getProjectionLedZ() const;
+
+  [[nodiscard]] const std::vector<int> & getVehicleLedPeriodTicks() const;
+  [[nodiscard]] const std::vector<int> & getVehicleLedEnabledTicks() const;
+
 
 };
 

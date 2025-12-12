@@ -85,6 +85,8 @@ struct VehiclePointSet
 };
 
 using VehiclePointSets = std::vector<VehiclePointSet>;
+using VehiclePoints = VehiclePointSets;
+using VehiclePointTimeseries = std::vector<VehiclePointSets>;
 
 }  // namespace indoor_positioning_system
 

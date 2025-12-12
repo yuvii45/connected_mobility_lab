@@ -30,17 +30,15 @@ namespace indoor_positioning_system
 class VehicleIdentification
 {
 private:
-  bool id_request_matched_ = true;
-  int requested_vehicle_id_ = 0;
-
-  void reset();
+  std::vector<int> identification_LED_period_ticks;
+  std::vector<int> identification_LED_enabled_ticks;
 
 public:
   explicit VehicleIdentification(const IndoorPositioningSystemParameter & parameters);
 
   void setRequestedVehicleId(const int vehicle_id);
 
-  VehiclePointSets apply(const VehiclePointSets & vehicle_points);
+  VehiclePoints apply(const VehiclePointTimeseries & vehicle_point_timeseries);
 };
 }  // namespace indoor_positioning_system
 

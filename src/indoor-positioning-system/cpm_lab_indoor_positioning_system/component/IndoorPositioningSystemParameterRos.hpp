@@ -222,6 +222,30 @@ public:
     nh.get_parameter("projection_led_z", projection_led_z_);
     RCLCPP_INFO(logger, "projection_led_z: %f", projection_led_z_);
 
+    // --- Vehicle LED Period Ticks ---
+    RCLCPP_DEBUG(logger, "---> vehicle_led_period_ticks");
+    if (!nh.has_parameter("vehicle_led_period_ticks")) {
+      nh.declare_parameter("vehicle_led_period_ticks", rclcpp::PARAMETER_INTEGER_ARRAY);
+    }
+    // Note: ROS 2 parameters store arrays as int64, need to be careful with type or casting if member is int.
+    // std::vector<int> is not directly supported by get_parameter for INTEGER_ARRAY (which is vector<int64_t>).
+    // Let's use a temporary vector to be safe.
+    
+    std::vector<int64_t> temp_period_ticks;
+    nh.get_parameter("vehicle_led_period_ticks", temp_period_ticks);
+    vehicle_led_period_ticks_.assign(temp_period_ticks.begin(), temp_period_ticks.end());
+    RCLCPP_INFO(logger, "vehicle_led_period_ticks: %zu elements", vehicle_led_period_ticks_.size());
+
+    // --- Vehicle LED Enabled Ticks ---
+    RCLCPP_DEBUG(logger, "---> vehicle_led_enabled_ticks");
+    if (!nh.has_parameter("vehicle_led_enabled_ticks")) {
+      nh.declare_parameter("vehicle_led_enabled_ticks", rclcpp::PARAMETER_INTEGER_ARRAY);
+    }
+    std::vector<int64_t> temp_enabled_ticks;
+    nh.get_parameter("vehicle_led_enabled_ticks", temp_enabled_ticks);
+    vehicle_led_enabled_ticks_.assign(temp_enabled_ticks.begin(), temp_enabled_ticks.end());
+    RCLCPP_INFO(logger, "vehicle_led_enabled_ticks: %zu elements", vehicle_led_enabled_ticks_.size());
+
     // Validate parameters
     validateParameterSet();
   }

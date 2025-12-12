@@ -57,6 +57,7 @@ private:
   FloorPoints floor_points_;
   VehiclePointSets possible_vehicle_points_;
   VehiclePointSets vehicle_points_;
+  VehiclePointTimeseries vehicle_point_history_;
   std::vector<VehicleObservation> vehicle_observations_;
   std::unordered_map<int, VehicleState> vehicle_states_;
 
