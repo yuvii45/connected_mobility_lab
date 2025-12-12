@@ -51,7 +51,7 @@ struct VehicleCandidate
 class VehicleDetection
 {
 private:
-  const double PERCENTAGE_TOLERANCE = 0.2;
+  const double PERCENTAGE_TOLERANCE = 1.0;
   const double distance_front_to_rear_;
   const double distance_rear_to_rear_;
   const double angle_front_to_rear_;

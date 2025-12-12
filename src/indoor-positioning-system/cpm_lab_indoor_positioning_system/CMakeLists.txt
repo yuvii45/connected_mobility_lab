@@ -76,6 +76,19 @@ rclcpp_components_register_node(
   EXECUTABLE indoor_positioning_system_node
 )
 
+add_executable(dummy_publisher
+    src/dummy.cpp)
+
+ament_target_dependencies(dummy_publisher
+    rclcpp
+    std_msgs
+    builtin_interfaces
+    geometry_msgs
+    cpm_lab_lab_msgs
+)
+
+install(TARGETS dummy_publisher
+    DESTINATION lib/${PROJECT_NAME})
 # =============================================================================
 # Installation rules
 install(TARGETS

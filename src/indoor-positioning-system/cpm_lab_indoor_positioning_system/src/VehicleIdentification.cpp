@@ -57,7 +57,7 @@ VehiclePointSets VehicleIdentification::apply(const VehiclePointSets & vehicle_p
     if(!point_set.center_present) {continue;}
 
     point_set.id = requested_vehicle_id_;
-    std::cerr <<
+    std::cout <<
       "Assign vehicle id " + std::to_string(requested_vehicle_id_) + " via center LED." <<
       std::endl;
 

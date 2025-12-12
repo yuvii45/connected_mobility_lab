@@ -68,6 +68,7 @@ VehiclePointSets VehicleDetection::apply(const FloorPoints & floor_points) const
   std::vector<VehicleCandidate> candidates =
     find_vehicle_candidates(floor_points, point_distances);
 
+  std::cout << "Vehicle candidates found: " << candidates.size() << std::endl;
   // resolve conflicts (overlapping points)
   std::vector<VehicleCandidate> vehicles = resolve_conflicts(candidates);
 
